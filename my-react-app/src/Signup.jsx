@@ -1,4 +1,5 @@
 import React, { use, useState } from 'react';
+import './signup.css'
 
 const Signup = () => {
   const [emailValue, setEmailValue] = useState('');
@@ -35,7 +36,7 @@ const Signup = () => {
     <div className='SignupContainer'>
       <form onSubmit={saveSignupInfo}>
         <div>
-          Username:
+          Username
           <input
             type='text'
             value={emailValue}
@@ -43,9 +44,9 @@ const Signup = () => {
           ></input>
         </div>
         <div>
-          Password:
+          Password
           <input
-            type='text'
+            type='password'
             value={passwordValue}
             onChange={(e) => setPasswordValue(e.target.value)}
           ></input>

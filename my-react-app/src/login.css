@@ -1,0 +1,58 @@
+.LoginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background-color: #f5f5f5; /* Light background color */
+}
+
+.LoginContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between form elements */
+    padding: 20px 30px; /* Add some horizontal padding */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    min-width: 300px; /* Ensure consistent width */
+}
+
+.LoginContainer div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between label and input */
+}
+
+.LoginContainer input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%; /* Make inputs full width */
+    box-sizing: border-box; /* Ensure padding doesn’t overflow */
+}
+
+.LoginContainer button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%; /* Make buttons full width */
+}
+
+.LoginContainer button:hover {
+    background-color: #0056b3;
+}
+
+.LoginContainer button + button {
+    margin-top: 10px; /* Add spacing between buttons */
+    background-color: #6c757d; /* Different color for secondary button */
+}
+
+.LoginContainer button + button:hover {
+    background-color: #5a6268;
+}

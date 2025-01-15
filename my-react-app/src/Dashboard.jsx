@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import React from 'react';
 function Dashboard() {
   // need to create state for search
   const [searchValue, setSearchValue] = useState('');

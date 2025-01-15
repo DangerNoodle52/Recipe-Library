@@ -26,6 +26,7 @@ const Signup = () => {
       if (!response.ok) {
         throw new Error('Failed to create user');
       }
+      redirectLogin();
     } catch (error) {
       console.error('Signup failed:', error);
     }
@@ -55,7 +56,7 @@ const Signup = () => {
             onChange={(e) => setPasswordValue(e.target.value)}
           ></input>
         </div>
-        <button onClick={redirectLogin}>Sign up</button>
+        <button>Sign up</button>
       </form>
     </div>
   );

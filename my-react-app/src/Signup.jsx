@@ -1,5 +1,5 @@
 import React, { use, useState } from 'react';
-import './signup.css'
+import './signup.css';
 
 const Signup = () => {
   const [emailValue, setEmailValue] = useState('');
@@ -26,10 +26,15 @@ const Signup = () => {
       if (!response.ok) {
         throw new Error('Failed to create user');
       }
+      redirectLogin();
     } catch (error) {
       console.error('Signup failed:', error);
     }
     //window.location.href = 'http://localhost:5173';
+  };
+
+  const redirectLogin = (event) => {
+    window.location.href = 'http://localhost:5173/login';
   };
 
   return (

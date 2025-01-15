@@ -5,12 +5,33 @@ function RecipeDetails() {
   const { idMeal } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [userId, setUserId] = useState(null); // Added state for user
 
   useEffect(() => {
+
+    // Fetch current user ID from the session
+    const fetchUserId = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/current-user', {
+          credentials: 'include', // Inclue cookie for session-based auth
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserId(data.userId);
+        } else {
+          console.error('Failed to fetch User ID');
+        }
+      } catch (error) {
+        console.error(' Error fetching user ID', error);
+      }
+    };
+
+    fetchUserId();
+
     if (idMeal) {
       fetchRecipeDetails(idMeal);
     } else {
-      console.error('No Ide meal found.');
+      console.error('No ID for meal found.');
     }
   }, [idMeal]);
 
@@ -29,12 +50,29 @@ function RecipeDetails() {
   // save recipe
   const handleFavorite = async () => {
     try {
+      // Added user ID verification
+      if (!userId) {
+        console.error('User ID not found');
+        return;
+      }
+
       const response = await fetch('http://localhost:8080/savedRecipe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ recipe }), // Send the recipe data to the backend
+        body: JSON.stringify({
+          userId: userId,
+          recipe: {
+            title: recipe.strMeal,
+            ingredients: Object.keys(recipe)
+              .filter((key) => key.includes('strIngredient') && recipe[key])
+              .map((key) => recipe[key])
+              .join(', '),
+            directions: recipe.strInstructions,
+            category: recipe.strCategory,
+          },
+        }), // Send the recipe data to the backend
       });
 
       if (response.ok) {

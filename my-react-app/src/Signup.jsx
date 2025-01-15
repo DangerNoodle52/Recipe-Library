@@ -1,5 +1,5 @@
 import React, { use, useState } from 'react';
-import './signup.css'
+import './signup.css';
 
 const Signup = () => {
   const [emailValue, setEmailValue] = useState('');
@@ -32,6 +32,10 @@ const Signup = () => {
     //window.location.href = 'http://localhost:5173';
   };
 
+  const redirectLogin = (event) => {
+    window.location.href = 'http://localhost:5173/login';
+  };
+
   return (
     <div className='SignupContainer'>
       <form onSubmit={saveSignupInfo}>
@@ -51,7 +55,7 @@ const Signup = () => {
             onChange={(e) => setPasswordValue(e.target.value)}
           ></input>
         </div>
-        <button>Sign up</button>
+        <button onClick={redirectLogin}>Sign up</button>
       </form>
     </div>
   );

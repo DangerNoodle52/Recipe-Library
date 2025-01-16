@@ -107,6 +107,7 @@ app.get('/logout', (req, res) => {
     res.status(200).json({ message: 'Logged out successfully' });
   }
 });
+
 // Global handler
 app.use((err, req, res, next) => {
   console.error(err.log || err.message);

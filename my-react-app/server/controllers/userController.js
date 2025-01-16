@@ -10,13 +10,10 @@ userController.createUser = async (req, res, next) => {
 
     if (!email || !password) {
       console.error('Missing properties in request body');
-      console.error('Missing properties in request body');
 
       return next({
         log: 'Missing required properties in request body',
-        log: 'Missing required properties in request body',
         status: 400,
-        message: 'Missing required properties: email or password ',
         message: 'Missing required properties: email or password ',
       });
     }
@@ -26,9 +23,14 @@ userController.createUser = async (req, res, next) => {
     if (existingUser) {
       console.error('Email already exists');
       return res.status(409).json({ error: 'Email already exists' });
-      console.error('Email already exists');
-      return res.status(400).json({ error: 'Email already exists' });
     }
+
+    // // Destroy the previous session
+    // if (req.session) {
+    //   req.session.destroy((err) => {
+    //     if (err) console.error('Error destroying session', err);
+    //   });
+    // }
 
     // Create a new user and return in a response
     const newUser = new User({
@@ -77,12 +79,9 @@ userController.verifyUser = async (req, res, next) => {
     // checks if the email exists
     if (!user) {
       console.error('User not found');
-      console.error('User not found');
       return next({
         log: 'User not found',
-        log: 'User not found',
         status: 404,
-        message: 'User not found ',
         message: 'User not found ',
       });
     }
@@ -93,12 +92,9 @@ userController.verifyUser = async (req, res, next) => {
     // checks if the password its invalid
     if (!isPassValid) {
       console.error('Invalid Password');
-      console.error('Invalid Password');
       return next({
         log: 'Invalid Password',
-        log: 'Invalid Password',
         status: 401,
-        message: 'Invalid Password ',
         message: 'Invalid Password ',
       });
     }
@@ -137,9 +133,7 @@ userController.savedRecipes = async (req, res, next) => {
     if (!user) {
       return next({
         log: 'User not found',
-        log: 'User not found',
         status: 404,
-        message: 'User not found ',
         message: 'User not found ',
       });
     }

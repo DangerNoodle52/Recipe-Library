@@ -4,6 +4,7 @@ import './signup.css';
 const Signup = () => {
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  const [error, setError] = useState('');
 
   const saveSignupInfo = async (event) => {
     event.preventDefault();
@@ -22,11 +23,21 @@ const Signup = () => {
           password: passwordValue,
         }),
       });
+
       const data = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to create user');
+        console.log('Error response data:', data);
+        if (data.error === 'Email already exists') {
+          // setError('Email already exists');
+        } else {
+          setError('Failed to create user');
+        }
+        // throw new Error(data.error || 'Failed to create user');
+        alert(data.error || 'Failed to create user');
+      } else {
+        setError('');
+        redirectLogin();
       }
-      redirectLogin();
     } catch (error) {
       console.error('Signup failed:', error);
     }
@@ -34,7 +45,7 @@ const Signup = () => {
   };
 
   const redirectLogin = (event) => {
-    window.location.href = 'http://localhost:5173/login';
+    window.location.href = 'http://localhost:5173/search';
   };
 
   return (
@@ -43,20 +54,25 @@ const Signup = () => {
         <div>
           Username
           <input
-            type='text'
+            type='email'
+            id='email'
             value={emailValue}
             onChange={(e) => setEmailValue(e.target.value)}
+            required
           ></input>
         </div>
         <div>
           Password
           <input
             type='password'
+            id='password'
             value={passwordValue}
             onChange={(e) => setPasswordValue(e.target.value)}
+            required
           ></input>
         </div>
-        <button>Sign up</button>
+        {/* {error && <div className='error-message'> {error}</div>} */}
+        <button type='submit'>Sign up</button>
       </form>
     </div>
   );

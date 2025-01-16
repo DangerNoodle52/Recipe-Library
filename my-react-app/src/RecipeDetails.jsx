@@ -10,7 +10,7 @@ function RecipeDetails() {
     if (idMeal) {
       fetchRecipeDetails(idMeal);
     } else {
-      console.error('No Ide meal found.');
+      console.error('No Id meal found.');
     }
   }, [idMeal]);
 

@@ -7,11 +7,14 @@ import Signup from './Signup';
 import { Route, Routes, useLocation } from 'react-router-dom';
 function App() {
   const location = useLocation();
+
+  const hideNavbarPaths = ['/signup', '/'];
+  //       {/* {location.pathname !== '/signup' && location.pathname !== '/' && (
+  //   <Navbar />
+  // )} */}
   return (
     <div>
-      {location.pathname !== '/signup' && location.pathname !== '/' && (
-        <Navbar />
-      )}
+      {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path='/' element={<Login />} />
         <Route path='/signup' element={<Signup />} />

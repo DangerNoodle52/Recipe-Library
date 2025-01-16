@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const userController = require('./controllers/userController');
-const recipeController = require('./controllers/recipeController');
+const recipesController = require('./controllers/recipeController');
 
 dotenv.config();
 console.log('MongoDB URI:', process.env.MONGODB_URI);
@@ -58,16 +58,13 @@ app.get('/', (req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.get('/recipes', recipeController.getRecipes, (req, res) => {
+app.get('/recipes', recipesController.getRecipes, (req, res) => {
   return res.status(200).send(res.locals.recipes);
 });
 
-// POST request to save recipe to favorites for logged-in user
-app.post('/savedRecipes', recipeController.saveRecipes, (req, res) => {
-  res.status(200).json({ message: 'Recipe saved successfully' });
-});
+app.get('/savedRecipes');
 
-app.get('/search/:title', recipeController.searchRecipesByName, (req, res) => {
+app.get('/search/:title', recipesController.searchRecipesByName, (req, res) => {
   return res.status(200).send(res.locals.recipebyName);
 });
 
@@ -94,6 +91,22 @@ app.get('/current-user', (req, res) => {
   res.status(200).json({ userId: req.session.userId });
 });
 
+// server route to check if the user is logged in
+app.get('/isLoggedIn', (req, res) => {
+  if (req.session && req.session.userId) {
+    return res.status(200).json({ loggedIn: true });
+  }
+  return res.status(200).json({ loggedIn: false });
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  if (err) {
+    return res.status(500).json({ error: 'Failed to log out' });
+    res.clearCookie('connect.sid');
+    res.status(200).json({ message: 'Logged out successfully' });
+  }
+});
 // Global handler
 app.use((err, req, res, next) => {
   console.error(err.log || err.message);

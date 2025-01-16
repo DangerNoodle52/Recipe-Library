@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const userController = require('./controllers/userController');
-const recipesController = require('./controllers/recipeController');
+const recipeController = require('./controllers/recipeController');
 
 dotenv.config();
 console.log('MongoDB URI:', process.env.MONGODB_URI);
@@ -58,13 +58,13 @@ app.get('/', (req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.get('/recipes', recipesController.getRecipes, (req, res) => {
+app.get('/recipes', recipeController.getRecipes, (req, res) => {
   return res.status(200).send(res.locals.recipes);
 });
 
 app.get('/savedRecipes');
 
-app.get('/search/:title', recipesController.searchRecipesByName, (req, res) => {
+app.get('/search/:title', recipeController.searchRecipesByName, (req, res) => {
   return res.status(200).send(res.locals.recipebyName);
 });
 

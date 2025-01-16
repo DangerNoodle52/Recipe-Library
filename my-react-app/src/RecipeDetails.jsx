@@ -8,16 +8,19 @@ function RecipeDetails() {
   const [userId, setUserId] = useState(null); // Added state for user
 
   useEffect(() => {
-
     // Fetch current user ID from the session
     const fetchUserId = async () => {
       try {
         const response = await fetch('http://localhost:8080/current-user', {
           credentials: 'include', // Inclue cookie for session-based auth
         });
+
+        console.log('Response:', response);
+
         if (response.ok) {
           const data = await response.json();
-          setUserId(data.userId);
+          console.log('User data:', data); // Log the response data
+          setUserId(data.userId); // Store the userId in state
         } else {
           console.error('Failed to fetch User ID');
         }

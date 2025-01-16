@@ -1,5 +1,5 @@
-const User = require("../models/userModel");
-const bcryptjs = require("bcryptjs");
+const User = require('../models/userModel');
+const bcryptjs = require('bcryptjs');
 
 const userController = {};
 
@@ -9,32 +9,53 @@ userController.createUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      console.error("Missing properties in request body");
+      console.error('Missing properties in request body');
 
       return next({
-        log: "Missing required properties in request body",
+        log: 'Missing required properties in request body',
         status: 400,
-        message: "Missing required properties: email or password ",
+        message: 'Missing required properties: email or password ',
       });
     }
 
     //Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      console.error("Email already exists");
-      return res.status(409).json({ error: "Email already exists" });
+      console.error('Email already exists');
+      return res.status(400).json({ error: 'Email already exists' });
     }
 
     // Create a new user and return in a response
-    const user = new User({
+    const newUser = new User({
       email,
       password,
     });
 
-    await user.save();
-    res.locals.newUser = user;
+    await newUser.save();
 
-    next();
+    // Store the userId in the session
+    req.session.userId = newUser._id;
+    console.log('Session UserId:', req.session.userId);
+    console.log('Full Session:', req.session);
+
+    req.session.save((err) => {
+      if (err) {
+        console.error('Error saving session', err);
+        return res.status(500).json({ error: 'Failed to save session' });
+      }
+
+      return res.status(201).json({
+        message: 'Sign-up successful',
+        userId: newUser._id,
+        email: newUser.email,
+      });
+    });
+
+    // res.status(201).json({
+    //   message: 'Sign-up successful',
+    //   userId: newUser._id,
+    //   email: newUser.email,
+    // });
   } catch (err) {
     next(err);
   }
@@ -50,11 +71,11 @@ userController.verifyUser = async (req, res, next) => {
 
     // checks if the email exists
     if (!user) {
-      console.error("User not found");
+      console.error('User not found');
       return next({
-        log: "User not found",
+        log: 'User not found',
         status: 404,
-        message: "User not found ",
+        message: 'User not found ',
       });
     }
 
@@ -63,17 +84,23 @@ userController.verifyUser = async (req, res, next) => {
 
     // checks if the password its invalid
     if (!isPassValid) {
-      console.error("Invalid Password");
+      console.error('Invalid Password');
       return next({
-        log: "Invalid Password",
+        log: 'Invalid Password',
         status: 401,
-        message: "Invalid Password ",
+        message: 'Invalid Password ',
       });
     }
 
     req.session.userId = user._id;
     // Response with the user information
-    res.status(200).json( { user: { id: user._id, email: user.email } });
+    res.status(200).json({
+      user: {
+        message: 'Sign-up successful',
+        id: user._id,
+        email: user.email,
+      },
+    });
     // res.locals.user = user;
     next();
   } catch (err) {
@@ -91,9 +118,9 @@ userController.savedRecipes = async (req, res, next) => {
     // checks if the user exists
     if (!user) {
       return next({
-        log: "User not found",
+        log: 'User not found',
         status: 404,
-        message: "User not found ",
+        message: 'User not found ',
       });
     }
 

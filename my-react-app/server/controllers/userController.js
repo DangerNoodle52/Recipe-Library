@@ -80,7 +80,9 @@ userController.verifyUser = async (req, res, next) => {
       },
     });
     // Response with the user information
-    res.locals.user = user;
+    res.status(200).json({ user: { id: user._id, email: user.email } });
+    // res.locals.user = user;
+    next();
   } catch (err) {
     next(err);
   }

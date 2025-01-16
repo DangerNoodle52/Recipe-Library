@@ -83,6 +83,14 @@ app.post('/verifyUser', userController.verifyUser, (req, res) => {
   return res.status(200).send(res.locals.user);
 });
 
+// Verify the current session to pass UserId information
+app.get('/current-user', (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: 'Not logged in' });
+  }
+  res.status(200).json({ userId: req.session.userId });
+});
+
 // server route to check if the user is logged in
 app.get('/isLoggedIn', (req, res) => {
   if (req.session && req.session.userId) {

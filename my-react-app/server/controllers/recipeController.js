@@ -1,4 +1,5 @@
 const Recipe = require('../models/recipeModel');
+const User = require('../models/userModel');
 
 const recipeController = {};
 
@@ -31,24 +32,44 @@ recipeController.getRecipes = async (req, res, next) => {
 };
 
 // This is going to be a POST request in server
-
 recipeController.saveRecipes = async (req, res, next) => {
-  if (!recipe || !userId) {
-    return next({
-      log: 'Invalid request body',
-      status: 400,
-      message: 'Invalid request body',
-    });
-  }
   try {
-    const { title: strMeal } = req.body;
-    const userId = req.session.userId;
-    const newRecipe = new Recipe({ title: strMeal, userId });
-    await newRecipe.save();
-    res.status(200).json({ message: 'Recipe saved successfully' });
+    const { userId, recipe } = req.body;
+
+    if (!userId || !recipe) {
+      return res.status(400).json({ message: 'Missing userId or recipe data' });
+    }
+
+    const newRecipe = new Recipe({ ...recipe, userId });
+    const savedRecipe = await newRecipe.save();
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { savedRecipe: savedRecipe._id },
+    });
+
+    res
+      .status(201)
+      .json({ message: 'Recipe saved successfully', recipe: savedRecipe });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to save recipe' });
+    console.error('Error in saveRecipes', err);
+    next(err);
   }
+  // if (!recipe || !userId) {
+  //   return next({
+  //     log: 'Invalid request body',
+  //     status: 400,
+  //     message: 'Invalid request body',
+  //   });
+  // }
+  // try {
+  //   const { title: strMeal } = req.body;
+  //   const userId = req.session.userId;
+  //   const newRecipe = new Recipe({ title: strMeal, userId });
+  //   await newRecipe.save();
+  //   next();
+  // } catch (err) {
+  //   res.status(500).json({ message: 'Failed to save recipe' });
+  // }
 };
 
 recipeController.searchRecipesByName = async (req, res, next) => {

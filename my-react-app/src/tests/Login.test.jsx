@@ -7,6 +7,11 @@ import Login from '../Login.jsx';
 describe('Login', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    //later, login button with switch window location to 5173
+    const windowLocation = new URL('http://localhost:3000');
+    vi.spyOn(window, 'location', 'get').mockImplementation(
+      () => windowLocation
+    );
   });
   test('login works correctly', async () => {
     global.fetch = vi.fn(() =>
@@ -27,16 +32,19 @@ describe('Login', () => {
     );
 
     //inputs
-    const emailInput = screen.getByPlaceholderText(/Email.../i);
-    const passwordInput = screen.getByPlaceholderText(/Password.../i);
+    const emailInput = screen.getByPlaceholderText(/Email/i);
+    const passwordInput = screen.getByPlaceholderText(/Password/i);
 
+    //fireEvent simulates person filling out email and password fields
+    fireEvent.change(emailInput, { target: { value: 'test@gmail.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'dangerousnoodles' } });
     //the click
-    const loginButton = screen.getByPlaceholderText('Login');
+    const loginButton = screen.getByText(/Login/i);
     fireEvent.click(loginButton);
 
     //wait and verify results
     await waitFor(() => {
-      expect(window.location.href).includes('/search');
+      expect(window.location.href).to.include('http://localhost:5173/search');
     });
   });
 });

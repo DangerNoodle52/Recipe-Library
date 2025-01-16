@@ -1,6 +1,8 @@
 import React, { useEffect, use, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
@@ -34,7 +36,7 @@ const Login = () => {
       }
       if (data.authenticated) {
         console.log('User authenticated:', data.user);
-        window.location.href = 'http://localhost:5173/search';
+        navigate('/search');
       } else {
         setError(data.error || 'Invalid email or password');
       }

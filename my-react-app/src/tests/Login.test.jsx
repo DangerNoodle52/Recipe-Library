@@ -4,14 +4,17 @@ import { vi, describe, test, expect, includes } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import Login from '../Login.jsx';
 
+// Mock navigation
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockNavigate,
+}));
+
 describe('Login', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     //later, login button with switch window location to 5173
-    const windowLocation = new URL('http://localhost:3000');
-    vi.spyOn(window, 'location', 'get').mockImplementation(
-      () => windowLocation
-    );
   });
   test('login works correctly', async () => {
     global.fetch = vi.fn(() =>
@@ -19,6 +22,7 @@ describe('Login', () => {
         ok: true,
         json: () =>
           Promise.resolve({
+            authenticated: true,
             email: 'test@gmail.com',
             password: 'dangerousnoodles',
           }),
@@ -38,13 +42,13 @@ describe('Login', () => {
     //fireEvent simulates person filling out email and password fields
     fireEvent.change(emailInput, { target: { value: 'test@gmail.com' } });
     fireEvent.change(passwordInput, { target: { value: 'dangerousnoodles' } });
-    //the click
-    const loginButton = screen.getByText(/Login/i);
-    fireEvent.click(loginButton);
+    //the submission of form
+    const submitButton = screen.getByText('Login');
+    fireEvent.click(submitButton);
 
     //wait and verify results
     await waitFor(() => {
-      expect(window.location.href).to.include('http://localhost:5173/search');
+      expect(mockNavigate).toHaveBeenCalledWith('/search');
     });
   });
 });

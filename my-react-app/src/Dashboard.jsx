@@ -117,3 +117,5 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+//Next, add placeholders to login.jsx
